@@ -1,2 +1,2 @@
 # mapdata_fips_aggregation
-selenium, chrome_webdriver
+selenium, chrome_webdriver, BS4
