@@ -1,0 +1,4 @@
+{
+    "aws.telemetry": false,
+    "terminal.integrated.shellIntegration.history": 25
+}
