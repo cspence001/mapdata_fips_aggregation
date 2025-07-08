@@ -1,8 +1,4 @@
 # mapdata_fips_aggregation
-selenium, chrome_webdriver, BS4<br>
-FIPS scraping<br>
-Choropleth shapefile pairing<br>
-alternate geocoding (public api)<br>
 
 ## Main Features & Purpose
 
@@ -14,7 +10,7 @@ This repository is a **geospatial data processing pipeline** that combines multi
 - **Web scraping automation** using Selenium WebDriver with Chrome/Brave browser
 - Targets the **US Census Bureau's geocoding service** (`https://geocoding.geo.census.gov/geocoder/geographies/coordinates?form`)
 - **Coordinate-to-FIPS conversion**: Takes latitude/longitude coordinates and retrieves corresponding FIPS codes
-- **State-specific processing**: Separate notebooks for each state 
+- **State-specific processing**: Separate notebooks for each state (NY example shown)
 - **Error handling**: Manages timeouts, missing data, and multiple FIPS returns
 - **Data cleaning**: Removes brackets, handles empty results, processes regex patterns
 
@@ -25,10 +21,22 @@ This repository is a **geospatial data processing pipeline** that combines multi
 - **Error handling** for addresses not found
 - **API key management** for Google services
 
-#### 3. **Data Pipeline Architecture**
-The workflow follows this pattern:
+#### 3. **Census Geocoder Alternative** (`census_geocoder/`)
+- **Backup geocoding solution** using the US Census Bureau's public geocoding API
+- **Direct address-to-coordinates-to-FIPS pipeline** that bypasses Google's service entirely
+- **Rate-limited but free alternative**: Slower processing speed but no API costs or quotas
+- **Fallback mechanism**: Used when Google API limits are reached or exceeded
+- **State-specific implementations**: 14 separate notebooks for different states 
+- **Integrated workflow**: Combines geocoding and FIPS retrieval in a single API call
+- **Dependencies**: Uses selenium, BeautifulSoup, requests, and pandas for processing
+- **Cost-effective scaling**: Allows continued processing when commercial API budgets are exhausted
+
+#### 4. **Data Pipeline Architecture**
+The workflow follows multiple pathways:
 ```
-Raw Address Data → Google Geocoding → Lat/Long Coordinates → Census FIPS Scraping → Enriched Dataset
+Primary Path: Raw Address Data → Google Geocoding → Lat/Long Coordinates → Census FIPS Scraping → Enriched Dataset
+
+Alternative Path: Raw Address Data → Census Geocoder → Lat/Long + FIPS → Enriched Dataset
 ```
 
 ### Key Technical Features
@@ -36,7 +44,7 @@ Raw Address Data → Google Geocoding → Lat/Long Coordinates → Census FIPS S
 #### **Multi-Source Data Integration**
 - Combines Google's geocoding accuracy with Census Bureau's authoritative FIPS data
 - **Fallback mechanisms**: Uses existing FIPS data when available, fills gaps with scraped data
-- **Data validation**: Filters for valid coordinates and handles null values
+- **Hybrid approach**: Primary Google API with Census Bureau backup for cost management
 
 #### **State-by-State Processing**
 - Modular approach with separate processing for each US state
@@ -78,5 +86,6 @@ Raw Address Data → Google Geocoding → Lat/Long Coordinates → Census FIPS S
 - **Jupyter notebooks** provide interactive development and debugging
 - **Separation of concerns** between geocoding and FIPS retrieval
 - **Reusable components** across different geographic regions
+- **Cost-effective redundancy**: Multiple geocoding pathways ensure continuous processing regardless of API limitations
 
 This repository essentially serves as a **comprehensive geocoding and geographic enrichment pipeline** that transforms raw address data into map-ready datasets with standardized FIPS codes, making it valuable for any application requiring US geographic data visualization or analysis.
